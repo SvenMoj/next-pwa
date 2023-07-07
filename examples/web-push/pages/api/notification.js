@@ -37,4 +37,28 @@ const Notification = (req, res) => {
   }
 }
 
+var cron = require('node-cron');
+
+cron.schedule('* * * * *', () => {
+  console.log('running a task every minute');
+
+  webPush
+    .sendNotification(
+      subscription,
+      JSON.stringify({ title: 'Cron test', message: 'this might be annoying over time' })
+    )
+    .then(response => {
+      res.writeHead(response.statusCode, response.headers).end(response.body)
+    })
+    .catch(err => {
+      if ('statusCode' in err) {
+        res.writeHead(err.statusCode, err.headers).end(err.body)
+      } else {
+        console.error(err)
+        res.statusCode = 500
+        res.end()
+      }
+    })
+});
+
 export default Notification
