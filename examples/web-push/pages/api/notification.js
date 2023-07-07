@@ -1,5 +1,4 @@
 const webPush = require('web-push')
-const cron = require('node-cron')
 
 webPush.setVapidDetails(
   `mailto:${process.env.WEB_PUSH_EMAIL}`,
@@ -30,10 +29,7 @@ const sendNotification = async (subscription) => {
 const Notification = (req, res) => {
   if (req.method == 'POST') {
     const { subscription } = req.body
-
-    cron.schedule('5 * * * * *', () => {
-      sendNotification(subscription)
-    });
+    sendNotification(subscription)
   }
   else {
     res.statusCode = 405
